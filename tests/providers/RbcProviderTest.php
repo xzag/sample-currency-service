@@ -77,4 +77,21 @@ class RbcProviderTest extends TestCase
             )->getRate()
         );
     }
+
+    public function testCompatibleCurrencyRequest()
+    {
+        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(dirname(__DIR__) . '/data/RbcResponseUSDRUB.json')));
+
+        $provider = new RbcProvider($this->_mock->getClient());
+        $this->assertEquals(62.8666, $provider->getExchangeRate(new ExchangeRateRequest('USD', 'RUR'))->getRate());
+    }
+
+    public function testMalformedResponse()
+    {
+        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(dirname(__DIR__) . '/data/RbcResponseMalformed.json')));
+
+        $provider = new RbcProvider($this->_mock->getClient());
+        $this->expectException(ProviderException::class);
+        $provider->getExchangeRate(new ExchangeRateRequest('USD', 'RUR'));
+    }
 }

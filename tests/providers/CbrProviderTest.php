@@ -2,6 +2,7 @@
 
 namespace xzag\currency\tests\providers;
 
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use xzag\currency\exceptions\ProviderException;
@@ -21,6 +22,20 @@ class CbrProviderTest extends TestCase
         parent::setUp();
 
         $this->_mock = new ClientMock();
+    }
+
+    public function testSetClient()
+    {
+        $client = $this->_mock->getClient();
+        $provider = new CbrProvider();
+        $provider->setClient($client);
+        $this->assertEquals($client, $provider->getClient());
+    }
+
+    public function testDefaultClient()
+    {
+        $provider = new CbrProvider();
+        $this->assertInstanceOf(ClientInterface::class, $provider->getClient());
     }
 
     public function testCorrectExchangeRate()
@@ -77,5 +92,13 @@ class CbrProviderTest extends TestCase
                 new ExchangeRateRequest('USD', 'EUR', new \DateTime('2019-07-20'))
             )->getRate()
         );
+    }
+
+    public function testCompatibleCurrencyRequest()
+    {
+        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(dirname(__DIR__) . '/data/CbrResponseValid.xml')));
+
+        $provider = new CbrProvider($this->_mock->getClient());
+        $this->assertEquals(62.8666, $provider->getExchangeRate(new ExchangeRateRequest('USD', 'RUR'))->getRate());
     }
 }

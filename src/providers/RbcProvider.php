@@ -39,7 +39,8 @@ class RbcProvider extends AbstractProvider
      */
     protected function makeCompatibleRequest(ExchangeRateRequest $rateRequest) : ExchangeRateRequest
     {
-        $request = clone $rateRequest;
+        $compRequest = parent::makeCompatibleRequest($rateRequest);
+        $request = clone $compRequest;
         $request->setCurrency($this->swapCurrency($rateRequest->getCurrency()));
         $request->setBaseCurrency($this->swapCurrency($rateRequest->getBaseCurrency()));
         return $request;
