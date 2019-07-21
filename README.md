@@ -1,6 +1,6 @@
 # Currency Service
 [![Build Status](https://travis-ci.org/xzag/sample-currency-service.svg?branch=master)](https://travis-ci.org/xzag/sample-currency-service)
-[![Coverage Status](https://coveralls.io/repos/github/xzag/sample-currency-service/badge.svg?branch=master)](https://coveralls.io/github/xzag/sample-currency-service?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/xzag/sample-currency-service/badge.svg?branch=master&cb=1)](https://coveralls.io/github/xzag/sample-currency-service?branch=master)
 
 Get exchange rate from multiple providers
 
