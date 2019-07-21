@@ -6,11 +6,12 @@ Get exchange rate from multiple providers
 
 ### Installation
 
-`composer require xzag/sample-currency-service`
+`composer require xzag/currency-service`
 
 ### Usage
 
-```$service = new \xzag\currency\Service();
+```
+$service = new \xzag\currency\Service();
 $service->setProviders([
     new \xzag\currency\providers\CbrProvider(),
     new \xzag\currency\providers\RbcProvider()
@@ -24,6 +25,6 @@ $rate = $service->getAverageExchangeRate(
     )
 ); 
 
-echo $rate; // 63.5841
+echo $rate->getRate(); // 63.5841
 
 ```
