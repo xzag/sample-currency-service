@@ -18,6 +18,8 @@ install:
   - travis_retry composer update --dev --prefer-dist --no-interaction
 
 script:
-  - |
-    cp phpunit.xml.dist phpunit.xml
-    vendor/bin/phpunit --bootstrap vendor/autoload.php tests/
+  - mkdir -p build/logs
+  - php vendor/bin/phpunit -c phpunit.xml.dist
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls
