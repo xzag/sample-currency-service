@@ -1,0 +1,16 @@
+{
+    "status": 200,
+    "meta": {
+        "sum_deal": 1.0,
+        "source": "cbrf",
+        "currency_from": "USD",
+        "date": "2019-07-20",
+        "currency_to": "EUR"
+    },
+    "data": {
+        "date": "2019-07-20",
+        "sum_result": 0.888,
+        "rate1": 0.888,
+        "rate2": 1.1261
+    }
+}

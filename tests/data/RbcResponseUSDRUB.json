@@ -1,0 +1,16 @@
+{
+    "status": 200,
+    "meta": {
+        "sum_deal": 1.0,
+        "source": "cbrf",
+        "currency_from": "USD",
+        "date": null,
+        "currency_to": "RUR"
+    },
+    "data": {
+        "date": "2019-07-20 21:37:48",
+        "sum_result": 62.8666,
+        "rate1": 62.8666,
+        "rate2": 0.0159
+    }
+}
