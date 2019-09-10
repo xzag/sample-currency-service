@@ -5,8 +5,15 @@ namespace xzag\currency\tests;
 use PHPUnit\Framework\TestCase;
 use xzag\currency\ExchangeRate;
 
+/**
+ * Class ExchangeRateTest
+ * @package xzag\currency\tests
+ */
 class ExchangeRateTest extends TestCase
 {
+    /**
+     *
+     */
     public function testRateProperty()
     {
         $exchangeRate = new ExchangeRate('RUB', 'USD', 1.0);
@@ -14,6 +21,9 @@ class ExchangeRateTest extends TestCase
         $this->assertEquals(45.0, $exchangeRate->getRate());
     }
 
+    /**
+     *
+     */
     public function testCurrencyProperty()
     {
         $exchangeRate = new ExchangeRate('RUB', 'USD', 1.0);

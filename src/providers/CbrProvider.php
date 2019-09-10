@@ -5,10 +5,15 @@ namespace xzag\currency\providers;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use SimpleXMLElement;
 use xzag\currency\exceptions\ProviderException;
 use xzag\currency\ExchangeRateProvider;
 use xzag\currency\ExchangeRateRequest;
 
+/**
+ * Class CbrProvider
+ * @package xzag\currency\providers
+ */
 class CbrProvider extends AbstractProvider
 {
     /**
@@ -67,11 +72,12 @@ class CbrProvider extends AbstractProvider
      * @param ExchangeRateRequest $rateRequest
      * @param ResponseInterface $response
      * @return float
+     *
      * @throws ProviderException
      */
     protected function parseResponse(ExchangeRateRequest $rateRequest, ResponseInterface $response): float
     {
-        $xml = new \SimpleXMLElement($response->getBody());
+        $xml = new SimpleXMLElement($response->getBody());
         $nodes = $xml->xpath(
             sprintf('./Valute[CharCode="%s"]', $rateRequest->getCurrency())
         );

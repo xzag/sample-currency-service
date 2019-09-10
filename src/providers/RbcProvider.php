@@ -9,6 +9,10 @@ use xzag\currency\exceptions\ProviderException;
 use xzag\currency\ExchangeRateProvider;
 use xzag\currency\ExchangeRateRequest;
 
+/**
+ * Class RbcProvider
+ * @package xzag\currency\providers
+ */
 class RbcProvider extends AbstractProvider
 {
     /**
@@ -23,7 +27,7 @@ class RbcProvider extends AbstractProvider
      * @param string $currency
      * @return string
      */
-    public function swapCurrency(string $currency) : string
+    public function swapCurrency(string $currency): string
     {
         switch ($currency) {
             case ExchangeRateProvider::CURRENCY_RUB:
@@ -37,12 +41,13 @@ class RbcProvider extends AbstractProvider
      * @param ExchangeRateRequest $rateRequest
      * @return ExchangeRateRequest
      */
-    protected function makeCompatibleRequest(ExchangeRateRequest $rateRequest) : ExchangeRateRequest
+    protected function makeCompatibleRequest(ExchangeRateRequest $rateRequest): ExchangeRateRequest
     {
         $compRequest = parent::makeCompatibleRequest($rateRequest);
         $request = clone $compRequest;
         $request->setCurrency($this->swapCurrency($rateRequest->getCurrency()));
         $request->setBaseCurrency($this->swapCurrency($rateRequest->getBaseCurrency()));
+
         return $request;
     }
 
@@ -73,6 +78,7 @@ class RbcProvider extends AbstractProvider
      * @param ExchangeRateRequest $rateRequest
      * @param ResponseInterface $response
      * @return float
+     *
      * @throws ProviderException
      */
     protected function parseResponse(ExchangeRateRequest $rateRequest, ResponseInterface $response): float

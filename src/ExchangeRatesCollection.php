@@ -2,19 +2,27 @@
 
 namespace xzag\currency;
 
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
 use xzag\currency\exceptions\InvalidValueException;
 
 /**
  * Class ExchangeRatesCollection
  * @package xzag\currency
  */
-class ExchangeRatesCollection implements \IteratorAggregate
+class ExchangeRatesCollection implements IteratorAggregate
 {
     /**
      * @var ExchangeRate[]
      */
     private $items;
 
+    /**
+     * ExchangeRatesCollection constructor.
+     *
+     * @param array $exchangeRates
+     */
     public function __construct(array $exchangeRates)
     {
         $this->items = $exchangeRates;
@@ -23,7 +31,7 @@ class ExchangeRatesCollection implements \IteratorAggregate
     /**
      * @return bool
      */
-    public function isEmpty() : bool
+    public function isEmpty(): bool
     {
         return empty($this->items);
     }
@@ -31,16 +39,17 @@ class ExchangeRatesCollection implements \IteratorAggregate
     /**
      * @return int
      */
-    public function count() : int
+    public function count(): int
     {
         return count($this->items);
     }
 
     /**
      * @return float
+     *
      * @throws InvalidValueException
      */
-    public function average()
+    public function average(): float
     {
         if ($this->isEmpty()) {
             throw new InvalidValueException('Empty rates collection');
@@ -50,24 +59,28 @@ class ExchangeRatesCollection implements \IteratorAggregate
             throw new InvalidValueException('Cannot aggregate for different base currencies');
         }
 
-        return array_reduce($this->items, function (float $acc, ExchangeRate $rate) {
-            return $acc + $rate->getRate();
-        }, 0.0) / $this->count();
+        return array_reduce(
+            $this->items,
+            function (float $acc, ExchangeRate $rate) {
+                return $acc + $rate->getRate();
+            },
+            0.0
+        ) / $this->count();
     }
 
     /**
-     * @return \ArrayIterator|\Traversable
+     * @return ArrayIterator|Traversable
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->items);
+        return new ArrayIterator($this->items);
     }
 
     /**
      * @param string|int $index
      * @return ExchangeRate
      */
-    public function item($index) : ExchangeRate
+    public function item($index): ExchangeRate
     {
         return $this->getIterator()->offsetGet($index);
     }
@@ -75,7 +88,7 @@ class ExchangeRatesCollection implements \IteratorAggregate
     /**
      * @return bool
      */
-    public function isCommonCurrencies() : bool
+    public function isCommonCurrencies(): bool
     {
         $currency = null;
         $baseCurrency = null;

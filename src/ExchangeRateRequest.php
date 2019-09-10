@@ -2,6 +2,8 @@
 
 namespace xzag\currency;
 
+use DateTimeInterface;
+
 /**
  * Class ExchangeRateRequest
  * @package xzag\currency
@@ -19,14 +21,21 @@ class ExchangeRateRequest
     private $baseCurrency;
 
     /**
-     * @var \DateTimeInterface|null
+     * @var DateTimeInterface|null
      */
     private $date;
 
+    /**
+     * ExchangeRateRequest constructor.
+     *
+     * @param string                  $currency
+     * @param string                  $baseCurrency
+     * @param DateTimeInterface|null $date
+     */
     public function __construct(
         string $currency,
         string $baseCurrency = ExchangeRateProvider::CURRENCY_RUB,
-        ?\DateTimeInterface $date = null
+        ?DateTimeInterface $date = null
     ) {
         $this->currency = mb_strtoupper(trim($currency));
         $this->baseCurrency = mb_strtoupper(trim($baseCurrency));
@@ -34,17 +43,17 @@ class ExchangeRateRequest
     }
 
     /**
-     * @param \DateTimeInterface $date
+     * @param DateTimeInterface $date
      */
-    public function setDate(\DateTimeInterface $date)
+    public function setDate(DateTimeInterface $date)
     {
         $this->date = $date;
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getDate() :? \DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
@@ -52,7 +61,7 @@ class ExchangeRateRequest
     /**
      * @return string
      */
-    public function getCurrency() : string
+    public function getCurrency(): string
     {
         return $this->currency;
     }
@@ -60,7 +69,7 @@ class ExchangeRateRequest
     /**
      * @param string $currency
      */
-    public function setCurrency(string $currency) : void
+    public function setCurrency(string $currency): void
     {
         $this->currency = $currency;
     }
@@ -68,7 +77,7 @@ class ExchangeRateRequest
     /**
      * @return string
      */
-    public function getBaseCurrency() : string
+    public function getBaseCurrency(): string
     {
         return $this->baseCurrency;
     }
@@ -76,7 +85,7 @@ class ExchangeRateRequest
     /**
      * @param string $baseCurrency
      */
-    public function setBaseCurrency(string $baseCurrency) : void
+    public function setBaseCurrency(string $baseCurrency): void
     {
         $this->baseCurrency = $baseCurrency;
     }

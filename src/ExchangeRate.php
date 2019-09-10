@@ -38,7 +38,7 @@ class ExchangeRate
     /**
      * @return string
      */
-    public function getCurrency() : string
+    public function getCurrency(): string
     {
         return $this->currency;
     }
@@ -46,7 +46,7 @@ class ExchangeRate
     /**
      * @return string
      */
-    public function getBaseCurrency() : string
+    public function getBaseCurrency(): string
     {
         return $this->baseCurrency;
     }
@@ -54,7 +54,7 @@ class ExchangeRate
     /**
      * @param float $rate
      */
-    public function setRate(float $rate) : void
+    public function setRate(float $rate): void
     {
         $this->rate = $rate;
     }
@@ -62,7 +62,7 @@ class ExchangeRate
     /**
      * @return float
      */
-    public function getRate() : float
+    public function getRate(): float
     {
         return $this->rate;
     }

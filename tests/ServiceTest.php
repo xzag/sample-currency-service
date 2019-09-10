@@ -5,6 +5,7 @@ namespace xzag\currency\tests;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use xzag\currency\exceptions\ConfigurationException;
+use xzag\currency\exceptions\InvalidValueException;
 use xzag\currency\exceptions\ProviderException;
 use xzag\currency\ExchangeRateRequest;
 use xzag\currency\providers\CbrProvider;
@@ -12,93 +13,158 @@ use xzag\currency\providers\RbcProvider;
 use xzag\currency\Service;
 use xzag\currency\tests\mock\ClientMock;
 
+/**
+ * Class ServiceTest
+ * @package xzag\currency\tests
+ */
 class ServiceTest extends TestCase
 {
     /**
      * @var Service
      */
-    private $_service;
+    private $service;
 
     /**
      * @var ClientMock
      */
-    private $_mock;
+    private $mock;
 
+    /**
+     *
+     */
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->_mock = new ClientMock();
+        $this->mock = new ClientMock();
 
-        $this->_service = new Service();
-        $this->_service->setProviders([
-            new CbrProvider($this->_mock->getClient()),
-            new RbcProvider($this->_mock->getClient())
-        ]);
+        $this->service = new Service();
+        $this->service->setProviders(
+            [
+                new CbrProvider($this->mock->getClient()),
+                new RbcProvider($this->mock->getClient())
+            ]
+        );
     }
 
+    /**
+     * @throws ConfigurationException
+     * @throws ProviderException
+     * @throws InvalidValueException
+     */
     public function testEmptyProvidersListException()
     {
-        $this->_service->setProviders([]);
+        $this->service->setProviders([]);
         $this->expectException(ConfigurationException::class);
-        $this->_service->getAverageExchangeRate(new ExchangeRateRequest('USD', 'RUB'));
+        $this->service->getAverageExchangeRate(
+            new ExchangeRateRequest('USD', 'RUB')
+        );
     }
 
+    /**
+     * @throws ConfigurationException
+     * @throws ProviderException
+     * @throws InvalidValueException
+     */
     public function testCorrectExchangeRates()
     {
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml')));
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/RbcResponseUSDRUB.json')));
-
-        $this->assertEquals(62.8666, $this->_service->getAverageExchangeRate(
-            new ExchangeRateRequest('USD', 'RUB'))->getRate()
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml'))
         );
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/RbcResponseUSDRUB.json'))
+        );
+
+        $this->assertEquals(62.8666, $this->service->getAverageExchangeRate(
+            new ExchangeRateRequest('USD', 'RUB')
+        )->getRate());
     }
 
+    /**
+     * @throws ConfigurationException
+     * @throws ProviderException
+     * @throws InvalidValueException
+     */
     public function testCorrectExchangeRatesToNonBaseCurrency()
     {
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml')));
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml')));
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/RbcResponseUSDEUR.json')));
-
-        $this->assertEquals(0.888, $this->_service->getAverageExchangeRate(
-            new ExchangeRateRequest('USD', 'EUR'))->getRate()
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml'))
         );
-    }
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml'))
+        );
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/RbcResponseUSDEUR.json'))
+        );
 
-
-    public function testInvalidCurrency()
-    {
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml')));
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/RbcResponseUSDRUB.json')));
-
-        $this->expectException(ProviderException::class);
-        $this->_service->getExchangeRates(new ExchangeRateRequest('WRONG', 'RUB'));
-    }
-
-    public function testExchangeToSameCurrency()
-    {
-        $this->assertEquals(1.0, $this->_service->getAverageExchangeRate(
-                new ExchangeRateRequest('USD', 'USD')
+        $this->assertEquals(
+            0.888,
+            $this->service->getAverageExchangeRate(
+                new ExchangeRateRequest('USD', 'EUR')
             )->getRate()
         );
     }
 
-    public function testExchangeToBaseCurrency()
+    /**
+     * @throws ConfigurationException
+     * @throws ProviderException
+     */
+    public function testInvalidCurrency()
     {
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml')));
-        $this->_mock->addMockResponse(new Response(200, [], file_get_contents(__DIR__ . '/data/RbcResponseRUBUSD.json')));
-
-        $this->assertEquals(0.0159, $this->_service->getAverageExchangeRate(
-            new ExchangeRateRequest('RUB', 'USD')
-        )->getRate()
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml'))
         );
-    }
-
-    public function testUnavailableResponse()
-    {
-        $this->_mock->addMockResponse(new Response(204, []));
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/RbcResponseUSDRUB.json'))
+        );
 
         $this->expectException(ProviderException::class);
-        $this->_service->getAverageExchangeRate(new ExchangeRateRequest('USD', 'RUB'))->getRate();
+        $this->service->getExchangeRates(new ExchangeRateRequest('WRONG', 'RUB'));
+    }
+
+    /**
+     * @throws ConfigurationException
+     * @throws InvalidValueException
+     * @throws ProviderException
+     */
+    public function testExchangeToSameCurrency()
+    {
+        $this->assertEquals(1.0, $this->service->getAverageExchangeRate(
+            new ExchangeRateRequest('USD', 'USD')
+        )->getRate());
+    }
+
+    /**
+     * @throws ConfigurationException
+     * @throws InvalidValueException
+     * @throws ProviderException
+     */
+    public function testExchangeToBaseCurrency()
+    {
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/CbrResponseValid.xml'))
+        );
+        $this->mock->addMockResponse(
+            new Response(200, [], file_get_contents(__DIR__ . '/data/RbcResponseRUBUSD.json'))
+        );
+
+        $this->assertEquals(0.0159, $this->service->getAverageExchangeRate(
+            new ExchangeRateRequest('RUB', 'USD')
+        )->getRate());
+    }
+
+    /**
+     * @throws ConfigurationException
+     * @throws InvalidValueException
+     * @throws ProviderException
+     */
+    public function testUnavailableResponse()
+    {
+        $this->mock->addMockResponse(new Response(204, []));
+
+        $this->expectException(ProviderException::class);
+        $this->service->getAverageExchangeRate(
+            new ExchangeRateRequest('USD', 'RUB')
+        )->getRate();
     }
 }

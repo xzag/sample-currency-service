@@ -17,12 +17,13 @@ interface ExchangeRateProvider
     /**
      * @param ExchangeRateRequest $request
      * @return ExchangeRate
+     *
      * @throws ProviderException
      */
-    public function getExchangeRate(ExchangeRateRequest $request) : ExchangeRate;
+    public function getExchangeRate(ExchangeRateRequest $request): ExchangeRate;
 
     /**
      * @return bool
      */
-    public function supportsBaseCurrencyInRequest() : bool;
+    public function supportsBaseCurrencyInRequest(): bool;
 }

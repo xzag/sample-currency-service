@@ -8,23 +8,27 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * Class ClientMock
+ * @package xzag\currency\tests\mock
+ */
 class ClientMock
 {
     /**
      * @var MockHandler
      */
-    private $_mock;
+    private $mock;
 
     /**
      * @var ClientInterface
      */
-    private $_client;
+    private $client;
 
     public function __construct()
     {
-        $this->_mock = new MockHandler();
-        $this->_client = new Client([
-            'handler' => HandlerStack::create($this->_mock)
+        $this->mock   = new MockHandler();
+        $this->client = new Client([
+            'handler' => HandlerStack::create($this->mock)
         ]);
     }
 
@@ -33,7 +37,7 @@ class ClientMock
      */
     public function getClient() : ClientInterface
     {
-        return $this->_client;
+        return $this->client;
     }
 
     /**
@@ -41,6 +45,6 @@ class ClientMock
      */
     public function addMockResponse(ResponseInterface $response)
     {
-        $this->_mock->append($response);
+        $this->mock->append($response);
     }
 }

@@ -12,6 +12,10 @@ use xzag\currency\ExchangeRate;
 use xzag\currency\ExchangeRateProvider;
 use xzag\currency\ExchangeRateRequest;
 
+/**
+ * Class AbstractProvider
+ * @package xzag\currency\providers
+ */
 abstract class AbstractProvider implements ExchangeRateProvider
 {
     /**
@@ -31,7 +35,7 @@ abstract class AbstractProvider implements ExchangeRateProvider
     /**
      * @return ClientInterface
      */
-    public function getClient() : ClientInterface
+    public function getClient(): ClientInterface
     {
         if (!isset($this->client)) {
             $this->setClient(new Client());
@@ -51,26 +55,26 @@ abstract class AbstractProvider implements ExchangeRateProvider
     /**
      * @return string
      */
-    abstract protected function getBaseCurrency() : string;
+    abstract protected function getBaseCurrency(): string;
 
     /**
      * @param ExchangeRateRequest $rateRequest
      * @return RequestInterface
      */
-    abstract protected function createHttpRequest(ExchangeRateRequest $rateRequest) : RequestInterface;
+    abstract protected function createHttpRequest(ExchangeRateRequest $rateRequest): RequestInterface;
 
     /**
      * @param ExchangeRateRequest $rateRequest
      * @param ResponseInterface $response
      * @return float
      */
-    abstract protected function parseResponse(ExchangeRateRequest $rateRequest, ResponseInterface $response) : float;
+    abstract protected function parseResponse(ExchangeRateRequest $rateRequest, ResponseInterface $response): float;
 
     /**
      * @param ExchangeRateRequest $rateRequest
      * @return ExchangeRateRequest
      */
-    protected function makeCompatibleRequest(ExchangeRateRequest $rateRequest) : ExchangeRateRequest
+    protected function makeCompatibleRequest(ExchangeRateRequest $rateRequest): ExchangeRateRequest
     {
         return $rateRequest;
     }
@@ -78,8 +82,8 @@ abstract class AbstractProvider implements ExchangeRateProvider
     /**
      * @param ExchangeRateRequest $rateRequest
      * @return ExchangeRate
+     *
      * @throws ProviderException
-     * @throws GuzzleException
      */
     public function getExchangeRate(ExchangeRateRequest $rateRequest): ExchangeRate
     {
@@ -87,7 +91,10 @@ abstract class AbstractProvider implements ExchangeRateProvider
 
         if ($request->getCurrency() === $request->getBaseCurrency()) {
             $rate = 1.0;
-        } elseif ($this->supportsBaseCurrencyInRequest() || $request->getBaseCurrency() === $this->getBaseCurrency()) {
+        } elseif (
+            $this->supportsBaseCurrencyInRequest()
+            || $request->getBaseCurrency() === $this->getBaseCurrency()
+        ) {
             $rate = $this->getExchangeRateValue($request);
         } else {
             $fromRateRequest = clone $request;
@@ -112,10 +119,10 @@ abstract class AbstractProvider implements ExchangeRateProvider
     /**
      * @param ExchangeRateRequest $rateRequest
      * @return float
+     *
      * @throws ProviderException
-     * @throws GuzzleException
      */
-    protected function getExchangeRateValue(ExchangeRateRequest $rateRequest) : float
+    protected function getExchangeRateValue(ExchangeRateRequest $rateRequest): float
     {
         if ($rateRequest->getCurrency() === $this->getBaseCurrency()) {
             return 1.0;
@@ -125,7 +132,10 @@ abstract class AbstractProvider implements ExchangeRateProvider
             $response = $this->getClient()->send($this->createHttpRequest($rateRequest));
 
             if ($response->getStatusCode() !== 200) {
-                throw new ProviderException($this, sprintf("Invalid response status (%s)", $response->getStatusCode()));
+                throw new ProviderException(
+                    $this,
+                    sprintf("Invalid response status (%s)", $response->getStatusCode())
+                );
             }
 
             return $this->parseResponse($rateRequest, $response);

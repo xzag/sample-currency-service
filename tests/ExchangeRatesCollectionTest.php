@@ -7,8 +7,15 @@ use xzag\currency\exceptions\InvalidValueException;
 use xzag\currency\ExchangeRate;
 use xzag\currency\ExchangeRatesCollection;
 
+/**
+ * Class ExchangeRatesCollectionTest
+ * @package xzag\currency\tests
+ */
 class ExchangeRatesCollectionTest extends TestCase
 {
+    /**
+     *
+     */
     public function testEmptyCollection()
     {
         $collection = new ExchangeRatesCollection([]);
@@ -16,6 +23,9 @@ class ExchangeRatesCollectionTest extends TestCase
         $this->assertEquals(0, $collection->count());
     }
 
+    /**
+     *
+     */
     public function testNonEmptyCollection()
     {
         $collection = new ExchangeRatesCollection([
@@ -25,6 +35,9 @@ class ExchangeRatesCollectionTest extends TestCase
         $this->assertEquals(1, $collection->count());
     }
 
+    /**
+     * @throws InvalidValueException
+     */
     public function testAverage()
     {
         $collection = new ExchangeRatesCollection([
@@ -34,6 +47,9 @@ class ExchangeRatesCollectionTest extends TestCase
         $this->assertEquals(4.5, $collection->average());
     }
 
+    /**
+     * @throws InvalidValueException
+     */
     public function testAverageWithEmptyData()
     {
         $collection = new ExchangeRatesCollection([]);
@@ -41,6 +57,9 @@ class ExchangeRatesCollectionTest extends TestCase
         $collection->average();
     }
 
+    /**
+     * @throws InvalidValueException
+     */
     public function testAverageWithInvalidData()
     {
         $collection = new ExchangeRatesCollection([
@@ -51,6 +70,9 @@ class ExchangeRatesCollectionTest extends TestCase
         $collection->average();
     }
 
+    /**
+     *
+     */
     public function testIsCommonCurrencies()
     {
         $collection = new ExchangeRatesCollection([
@@ -72,6 +94,9 @@ class ExchangeRatesCollectionTest extends TestCase
         $this->assertEquals(false, $collection->isCommonCurrencies());
     }
 
+    /**
+     *
+     */
     public function testIterator()
     {
         $collection = new ExchangeRatesCollection([
